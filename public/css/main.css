@@ -1,0 +1,10 @@
+body {
+    color:#333333;
+    background-color:#f3f3f3;
+
+}
+
+#srs-qa input,textarea {
+    display:block;
+
+}
