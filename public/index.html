@@ -5,21 +5,55 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-
+        
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
+        
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <!--<script src="js/vendor/modernizr-2.6.2.min.js"></script>-->
     </head>
     <body>
-        <form id="srs-qa" method="post" action="/">
-            <!-- Add your site or application content here -->
-            <textarea name="txtQestion" rows="10" cols="100" placeholder="question"></textarea>
-            <textarea name="txtAnswer" rows="10" cols="100" placeholder="answer"></textarea>
-            <input type="Submit"/>
-        </form>
+        <div class="container">
+            <div class="left-panel">
+                <div class="top-header">
+                    <form id="form-deck-create">
+                        <input id="deck-name" type="text"/>
+                        <input id="deck-create" type="button" value="create"/>
+                    </form>
+                </div>
+                <div class="deck-list">
+
+                </div>
+            </div>
+            <div class="main-panel">
+                <div class="main-content">
+                    <form class="hidden" id="form-qa">
+                        <!-- Add your site or application content here -->
+                        <textarea name="txt-question" rows="10" cols="100" placeholder="question"></textarea>
+                        <textarea name="txt-answer" rows="10" cols="100" placeholder="answer"></textarea>
+                        <input type="button" value="save"/>
+                    </form>
+                </div>
+                <div class="sub-content">
+                    
+                </div>
+            </div>
+        </div>
+
+      
+        <!--<div id="test-container">
+
+        </div>
+        <script id="testTemplate" type="text/x-handlebars-template">
+            {{#each test-data}}
+                    <p>{{lookup ../inner-array @index}}{{this}}</p>
+            {{/each}}
+        </script>-->
+        <!--<script id="formTemplate" type="text/x-handlebars-template">
+            
+        </script>-->
         <script src='components/jQuery/jQuery.min.js'></script>
+        <script src='components/handlebars/handlebars.js'></script>
         <script src='scripts/main.js'></script>
     </body>
 </html>

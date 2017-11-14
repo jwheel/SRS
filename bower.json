@@ -12,6 +12,7 @@
     "tests"
   ],
   "dependencies": {
-    "jQuery": "^3.2.1"
+    "jQuery": "^3.2.1",
+    "handlebars": "^4.0.10"
   }
 }

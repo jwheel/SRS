@@ -1,7 +1,8 @@
 $(function() {
-    
+   
+    let apiUrl = '/api/v0.1/';
       
-    var postAjaxHelper = function(urlParam,dataObject, successFunc, errorFunc) {
+    let postAjaxHelper = function(urlParam,dataObject, successFunc, errorFunc) {
 
         var data = dataObject;
 
@@ -14,7 +15,19 @@ $(function() {
         });
     };
 
-    var getAjaxHelper = function(urlParam, dataObject, successFunc, errorFunc) {
+    let putAjaxHelper = function(urlParam, dataObject, successFunc, errorFunc) {
+        var data = dataObject;
+
+        $.ajax({
+            type: 'PUT',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: urlParam,						
+            success: successFunc
+        });
+    }
+
+    let getAjaxHelper = function(urlParam, dataObject, successFunc, errorFunc) {
         var data = dataObject;
         if(!data) {
             $.ajax({
@@ -36,17 +49,59 @@ $(function() {
         }        
     };
 
-    var getTestData = function() {
+    let templateHelper = function(scriptNode, containerNode, data) {
+        let compiledTemplate = Handlebars.compile(scriptNode.html());
+        let generatedHtml = compiledTemplate(data);
+        containerNode.html(generatedHtml);
+    };
+
+
+    let getDeckNames = function() {
+        console.log('made it!');
+        getAjaxHelper('http://localhost:3000/api/v0.1/decks', {}, function(response,status) {
+           let decks = response;
+           templateHelper($('#deckListTemplate'), $('#deck-container'), decks)
+           console.log(decks);
+        });
+
+    }
+
+
+    let getTestData = function() {
         
         var testData;
         getAjaxHelper('http://localhost:3000/test', {'testParam1': 'some data'}, function(response,status) {
             testData = response;
-            console.log(response);
+            var template = $('#testTemplate').html();
+            var compiledTemplate = Handlebars.compile(template);
+            var generatedHtml = compiledTemplate(testData);
+            $('#test-container').html(generatedHtml);
         });
     };
 
-    getTestData();
+    let postTestData = function() {
+        let testData;
+        postAjaxHelper('http://localhost:3000/test', {'testParam1': 'some post data'}, function(response, status) {
+            testData = response;
+            console.log(response);
 
+        });
+    };
+
+    $('#deck-create').on('click', function() {
+        console.log('clicked the button!');
+        let deckName = $('#deck-name').val();
+        console.log(deckName);
+        putAjaxHelper('http://localhost:3000/api/v0.1/decks', {'deckName':deckName}, function(response, status) {
+            console.log(response);
+            let result = response.result;
+            console.log(result);
+        })
+    });
+
+    getDeckNames();
+    //getTestData();
+    //postTestData();
 
   
 })
