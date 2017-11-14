@@ -60,14 +60,14 @@ $(function() {
         console.log('made it!');
         getAjaxHelper('http://localhost:3000/api/v0.1/decks', {}, function(response,status) {
            let decks = response;
-           templateHelper($('#deckListTemplate'), $('#deck-container'), decks)
+           templateHelper($('#deck-list-template'), $('#deck-list-container'), decks)
            console.log(decks);
         });
 
     }
 
 
-    let getTestData = function() {
+    /*let getTestData = function() {
         
         var testData;
         getAjaxHelper('http://localhost:3000/test', {'testParam1': 'some data'}, function(response,status) {
@@ -77,25 +77,23 @@ $(function() {
             var generatedHtml = compiledTemplate(testData);
             $('#test-container').html(generatedHtml);
         });
-    };
+    };*/
 
-    let postTestData = function() {
+    /*let postTestData = function() {
         let testData;
         postAjaxHelper('http://localhost:3000/test', {'testParam1': 'some post data'}, function(response, status) {
             testData = response;
-            console.log(response);
-
+            
         });
-    };
+    };*/
 
     $('#deck-create').on('click', function() {
         console.log('clicked the button!');
         let deckName = $('#deck-name').val();
         console.log(deckName);
         putAjaxHelper('http://localhost:3000/api/v0.1/decks', {'deckName':deckName}, function(response, status) {
-            console.log(response);
             let result = response.result;
-            console.log(result);
+            
         })
     });
 

@@ -21,8 +21,8 @@
                         <input id="deck-create" type="button" value="create"/>
                     </form>
                 </div>
-                <div class="deck-list">
-
+                <div id="deck-list-container" class="deck-list">
+                    
                 </div>
             </div>
             <div class="main-panel">
@@ -39,8 +39,13 @@
                 </div>
             </div>
         </div>
-
-      
+        <script id="deck-list-template" type="text/x-handlebars-template">
+            <p>is anything here?</p>
+            {{#each names}}
+            <p>{{this}}</p>
+            {{/each}}
+        </script>
+        
         <!--<div id="test-container">
 
         </div>
