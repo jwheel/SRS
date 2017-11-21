@@ -93,7 +93,7 @@ $(function() {
         console.log(deckName);
         putAjaxHelper('http://localhost:3000/api/v0.1/decks', {'deckName':deckName}, function(response, status) {
             let result = response.result;
-            
+            getDeckNames();
         })
     });
 
