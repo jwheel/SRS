@@ -16,9 +16,6 @@ app.use(bodyParser.json());
 
 
 app.get('/test', function(req, res) {
-  console.log('request');
-  console.log(req.query);
-  console.log('response');
   
   const jsonResponse = {'test-data': [1,2,3,4,5,6,7,8,9], 'inner-array':['a','b','c','d']} ;
 
@@ -35,7 +32,7 @@ app.post('/test', function(req, res) {
 //decks
 //get
 app.get('/api/v0.1/decks', function(req, res) {
-  fileIO.getDeckNames(deckPath, function(items) {
+  fileIO.getDirectoryContents(deckPath, function(items) {
     const jsonObject = {names: items};
     
     res.json(jsonObject);  
@@ -49,7 +46,7 @@ app.get('/api/v0.1/decks', function(req, res) {
 //create
 app.put('/api/v0.1/decks', function(req, res) {
   const deckName = req.body.deckName;
-  fileIO.createNewDeck(path.join(__dirname, 'decks'), deckName, function() {
+  fileIO.createNewFile(path.join(__dirname, 'decks', deckName + '.srj'), function() {
       res.json({'result':'success'});
 
     }, function() {
