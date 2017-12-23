@@ -2,14 +2,14 @@ const fs = require('fs');
 const path = require('path');
 
 
-let createNewFile = function(filePath, success, error) {
+let createNewFile = function(filePath,contents, success, error) {
     //check if the file exists, return an error if it does
     
     checkIfFile(filePath, function(err, isFile) {
         if (isFile) {
             error();
         } else {
-            fs.writeFile(filePath,'', function(err) {
+            fs.writeFile(filePath,JSON.stringify(contents, null, 2), function(err) {
                 if (err) {
                     console.log(err);
                 } else {

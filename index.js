@@ -5,11 +5,11 @@ const fileIO = require('./utils/fileIO');
 const bodyParser = require('body-parser')
 const Validator = require('jsonschema').Validator;
 const deckSchema = require('./models/deck')
-
+const config = require('./config');
 var v = new Validator();
 v.addSchema(deckSchema.cardSchema, '/Card');
-const deck = {"id":29384};
-console.log(v.validate(deck,deckSchema.deckSchema));
+const deck = {};
+//console.log(v.validate(deck,deckSchema.deckSchema));
 
 const deckPath = path.join(__dirname, 'decks'); 
 app.use(bodyParser.json());
@@ -23,8 +23,6 @@ app.get('/test', function(req, res) {
 });
 
 app.post('/test', function(req, res) {
-  console.log('request');
-  console.log(req.body);
 
   res.json({'testDataPost' : [1,2,3,4,5,6,7,8,9,0]});
 });
@@ -86,8 +84,25 @@ app.use("/components/handlebars", express.static(path.join(__dirname, 'bower_com
   console.log('grrr!');
 });*/
 
+// we need to possibly initializde some stuff
+const working_path = config.app_settings.deck_directory;
+const header_file = path.join(working_path, 'index.srh');
 
+const application_start = function() {
+  app.listen(3000, function () {
+        console.log('SRS app listening on port 3000!')
+      });
+}
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
+fileIO.checkIfDirectory(working_path, function(error, isDirectory) {
+  if(!isDirectory) {
+    fileIO.createNewDirectory(working_path, function() {
+      console.log('created directory');
+      application_start();
+    }, function() {
+      console.log('problem creating directory');
+    })
+  } else {
+    application_start();
+  }
 });

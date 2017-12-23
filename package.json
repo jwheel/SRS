@@ -16,8 +16,9 @@
     "sinon": "^4.1.2"
   },
   "dependencies": {
-    "express": "^4.16.2",
     "body-parser": "^1.18.2",
-    "jsonschema": "^1.2.0"
+    "express": "^4.16.2",
+    "jsonschema": "^1.2.0",
+    "moment": "^2.19.2"
   }
 }

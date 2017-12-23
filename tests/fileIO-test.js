@@ -5,7 +5,8 @@ const chai = require('chai');
 const expect = chai.expect;
 const fs = require('fs');
 const currentPath = __dirname; 
-
+const utils = require('./shared_utils');
+const check = utils.check;
 describe('Array', function() {
   describe('#indexOf()', function() {
     it('should return -1 when the value is not present', function() {
@@ -15,14 +16,7 @@ describe('Array', function() {
 });
 
 //simple asynchronous helper function
-let check = function(done, f) {
-  try {
-    f();
-    done();
-  } catch (e) {
-    done(e);
-  }
-}
+
 /*
 exports.deleteDirectory = deleteDirectory;
 exports.createNewFile = createNewFile;
@@ -86,15 +80,6 @@ let fileIsNotDirectoryTest = function(done) {
   }, 0);    
 };
 
-let simpleGetContentsTest = function(done) {
-  setTimeout(function() {
-      fileIO.getDirectoryContents(currentPath, function(items) {
-        check(done, function() {
-          expect(items).to.deep.equal(['fileIO-test.js', 'testblank.js', 'testblank2.js']);
-      });
-    });
-  }, 0);
-};
 
 let deleteDirectoryTest = function(done) {
   
@@ -148,9 +133,6 @@ describe('fileIO', function() {
   describe('#checkIfDirectory', function() {
     it('should see that this directory exists', directoryExistenceTest);
     it('should see that this file is not a directory', fileIsNotDirectoryTest);
-  });
-  describe('#getDirectoryContents', function() {
-    it('should return an array containing the files in this directory', simpleGetContentsTest);
   });
   describe('#deleteDirectory', function() {
     it('should delete a directory.', deleteDirectoryTest);
