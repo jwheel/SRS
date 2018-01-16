@@ -1,143 +1,92 @@
 const assert = require('assert');
-const path = require('path');
-const fileIO = require('./../utils/fileIO');
+const fileIO = require('./../utils/fileIOrxjs');
 const chai = require('chai');
 const expect = chai.expect;
 const fs = require('fs');
-const currentPath = __dirname; 
-const utils = require('./shared_utils');
-const check = utils.check;
-describe('Array', function() {
-  describe('#indexOf()', function() {
-    it('should return -1 when the value is not present', function() {
-      assert.equal(-1, [1,2,3].indexOf(4));
+const config = require('./../config.js');
+const test_directory = config.app_settings.test_directory
+const Rx = require('rxjs');
+const path = require('path');
+
+
+
+describe('fileIO_checkIfDirectory', () => {
+  
+  it('should return true for a directory', done => {
+    const dir = test_directory;
+    fileIO.isDirectory(dir).subscribe(val => {
+      assert.equal(val, true);
+      done();
+    }, error => {
+      done(error);
     });
   });
+  it('should return false for a non-existant directory', done => {
+    const dir = test_directory;
+    fileIO.isDirectory(path.join(dir,'blah')).subscribe(returnValue =>{
+      assert.equal(returnValue, false);
+      done();
+    });
+  })
 });
 
-//simple asynchronous helper function
+const assertIsDirectory = function(isDirectory) {
+  assert.equal(isDirectory, true);
+}
 
-/*
-exports.deleteDirectory = deleteDirectory;
-exports.createNewFile = createNewFile;
-exports.createNewDirectory = createNewDirectory;
-exports.checkIfDirectory = checkIfDirectory;
-exports.checkIfFile = checkIfFile;
-exports.getDirectoryContents = getDirectoryContents;
-*/
-const expectBool = function(actual, expected) {
-  expect(actual).to.equal(expected);
-};
+const assertIsNotDirectory = function(isDirectory) {
+  assert.equal(isDirectory, false);  
+}
+
+const directoryDoesNotExistTest = function(directory,isFinal) {
+  fileIO.isDirectory(directory).subscribe(result => assertIsNotDirectory(result, true));
+}
 
 
-let fileExistenceTest = function(done) {
-  let checkFileCallback = function(err, isFile) {
-      check(done,() => {expectBool(isFile, true)});              
-    };
-  let checkFile = function () {
-    fileIO.checkIfFile(path.join(currentPath, 'fileIO-test.js'), checkFileCallback);
-  };
-  setTimeout(checkFile, 0);
-};
-
-let fileNotDirectoryTest = function(done) {
-  setTimeout(function() {
-    check(done, function() {
-      fileIO.checkIfFile(currentPath, function(err, isFile) {
-        expect(isFile).to.equal(false);
-      });
-    });
-  }, 0);
-};
-
-let imaginaryFileExistenceTest = function(done) {
-  setTimeout(function() {
-    fileIO.checkIfFile(path.join(currentPath, 'your_imagination.js'), function(err, isFile) {
-      check(done, function() {
-        expect(isFile).to.equal(false);
-      });
-    });
-  }, 0);        
-};
-
-let directoryExistenceTest = function(done) {
-  setTimeout(function() {
-    check(done, function() {
-      fileIO.checkIfDirectory(currentPath, function(err, isDirectory) {
-        expect(isDirectory).to.equal(true);
-      });
-    });
-  }, 0);      
-};
-  
-let fileIsNotDirectoryTest = function(done) {
-  setTimeout(function() {
-      fileIO.checkIfDirectory(path.join(currentPath, 'test.js'), function(err, isDirectory) {
-        check(done, function() {
-          expect(isDirectory).to.equal(false);
-      });
-    });
-  }, 0);    
-};
-
-
-let deleteDirectoryTest = function(done) {
-  
-  let directoryExistsCase = function() {
-    let deleteDirectoryCheck = function() {
-      fileIO.checkIfDirectory(path.join(currentPath, 'testDirectory'), function(innerError, isDirectoryInner) {
-        check(done, function() {
-          expect(isDirectoryInner).to.equal(false);
+describe('fileIO_DeleteFIle_GetDirectoryContents_CreateFile', () => {
+  //the only way I know to test this is in tandem
+  it('should list contents of a directory', done => {
+      const dir = test_directory;
+      fileIO.getDirectoryContents(dir)
+        .subscribe(val => {
+          assert.equal('decks',val[0]);
+          assert.equal('fileIO-test.js',val[1]);
+          done();        
+          
+          }, error => {
+            done(error);
         });
-      });
-    };
-    fileIO.deleteDirectory(path.join(currentPath, 'testDirectory'), deleteDirectoryCheck );
-  };
-  
-  let directoryDNECase = function() {
-   let createThenDelete = function(err, isDirectoryPre) {
-      let deleteDirectoryCheck = function() {
-        fileIO.checkIfDirectory(path.join(currentPath, 'testDirectory'), function(innerError, isDirectoryPost) {
-          check(done, function() {
-            expect(isDirectoryPre).to.equal(true);
-            expect(isDirectoryPost).to.equal(false);
-          });
-        });
-      }
-      fileIO.deleteDirectory(path.join(currentPath, 'testDirectory'), deleteDirectoryCheck);
-    };
-    fs.mkdir(path.join(currentPath, 'testDirectory'), function() {
-      fileIO.checkIfDirectory(path.join(currentPath, 'testDirectory'), createThenDelete);          
-    });
-  }
-  
-  setTimeout(function() {
-    fileIO.checkIfDirectory(path.join(currentPath, 'testDirectory'), function(err, isDirectory) {
-      if(isDirectory) {
-        directoryExistsCase();
-      }
-      else {
-        directoryDNECase();
-      }
-    });
-  }, 100);
-};
+  });
+    
+  it('should create a directory if it does not exist', done => {
+    const testDir = path.join(test_directory,'test');
 
-describe('fileIO', function() {
-  // test checkIfFile
-  describe('#checkIfFile', function() {
-    it('should see that this codefile exists', fileExistenceTest);
-    it('should see that this directory is not a file', fileNotDirectoryTest);
-    it('should see that an imaginary codefile does not exist', imaginaryFileExistenceTest);
-  });
-  describe('#checkIfDirectory', function() {
-    it('should see that this directory exists', directoryExistenceTest);
-    it('should see that this file is not a directory', fileIsNotDirectoryTest);
-  });
-  describe('#deleteDirectory', function() {
-    it('should delete a directory.', deleteDirectoryTest);
+    //should ultimately return deleteDirectoryObservable
+    const existsBranch = function(isDir,dir) {
+      if(isDir) {
+        return fileIO.deleteDirectory(dir);
+      } else {
+        return fileIO.createNewDirectory(dir)
+                .flatMap(() => {
+                  return fileIO.isDirectory(dir)
+                })
+                .flatMap(result => {
+                  assert.equal(result,true);
+                  return fileIO.deleteDirectory(dir);
+                });
+      }
+    };
+    fileIO.isDirectory(testDir)
+      .flatMap(isDir => {
+          
+          return existsBranch(isDir, testDir)
+      })
+      .flatMap(result => {
+        return fileIO.isDirectory(testDir);
+      })
+      .subscribe(finalResult => {
+        assert.equal(finalResult,false);
+        done();
+      })
   });
 });
-
-
-
