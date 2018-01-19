@@ -58,7 +58,7 @@ describe('fileIO_DeleteFIle_GetDirectoryContents_CreateFile', () => {
         });
   });
     
-  it('should create a directory if it does not exist', done => {
+  it('should create a directory if it does not exist and delete a directory', done => {
     const testDir = path.join(test_directory,'test');
 
     //should ultimately return deleteDirectoryObservable

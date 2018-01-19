@@ -4,18 +4,15 @@ const rimraf = require('rimraf');
 
 let isFile = function(file) {
     let checkFile$ = Rx.Observable.bindNodeCallback(fs.stat);
+    
     return checkFile$(file).mergeMap(result => {
         return Rx.Observable.of(result.isFile());
     });    
 };
 
-let deleteDirectory = function(directory) {
-    let rimraf$ = Rx.Observable.bindCallback(rimraf);
-    return rimraf$(directory);    
-};
-
 let isDirectory = function(filePath) {
     let isDirectory$ = Rx.Observable.bindNodeCallback(fs.stat);
+    
     return isDirectory$(filePath)
     .mergeMap((result,error) => {
         return Rx.Observable.of(result.isDirectory());
@@ -23,8 +20,7 @@ let isDirectory = function(filePath) {
     .catch(error => {
         if(error.code === 'ENOENT' || error.code === 'ENOTDIR') {
             return Rx.Observable.of(false);
-        }
-        else {
+        } else {
             throw error;
         }        
     });
@@ -54,15 +50,19 @@ let createNewDirectory = function(filePath) {
     });
 };
 
+let deleteDirectory = function(directory) {
+    let rimraf$ = Rx.Observable.bindCallback(rimraf);
+    return rimraf$(directory);    
+};
+
 let getDirectoryContents = function(filePath) {
     let getDirContents = Rx.Observable.bindNodeCallback(fs.readdir);
     return getDirContents(filePath);
 };
 
-
+exports.isFile = isFile;
+exports.isDirectory = isDirectory;
 exports.createNewFile = createNewFile;
 exports.createNewDirectory = createNewDirectory;
-exports.isDirectory = isDirectory;
-exports.isFile = isFile;
-exports.getDirectoryContents = getDirectoryContents;
 exports.deleteDirectory = deleteDirectory;
+exports.getDirectoryContents = getDirectoryContents;
