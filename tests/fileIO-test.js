@@ -32,16 +32,29 @@ describe('fileIO_checkIfDirectory', () => {
 
 const assertIsDirectory = function(isDirectory) {
   assert.equal(isDirectory, true);
-}
+};
 
 const assertIsNotDirectory = function(isDirectory) {
   assert.equal(isDirectory, false);  
-}
+};
 
 const directoryDoesNotExistTest = function(directory,isFinal) {
   fileIO.isDirectory(directory).subscribe(result => assertIsNotDirectory(result, true));
-}
-
+};
+const existsBranch = function(isDir,dir) {
+  if(isDir) {
+    return fileIO.deleteDirectory(dir);
+  } else {
+    return fileIO.createNewDirectory(dir)
+      .flatMap(() => {
+        return fileIO.isDirectory(dir)
+      })
+      .flatMap(result => {
+        assert.equal(result,true);
+        return fileIO.deleteDirectory(dir);
+      });
+  }
+};
 
 describe('fileIO_DeleteFIle_GetDirectoryContents_CreateFile', () => {
   //the only way I know to test this is in tandem
@@ -49,8 +62,9 @@ describe('fileIO_DeleteFIle_GetDirectoryContents_CreateFile', () => {
       const dir = test_directory;
       fileIO.getDirectoryContents(dir)
         .subscribe(val => {
-          assert.equal('decks',val[0]);
-          assert.equal('fileIO-test.js',val[1]);
+          assert.equal('deck-test.js',val[0]);
+          assert.equal('decks',val[1]);
+          assert.equal('fileIO-test.js',val[2]);
           done();        
           
           }, error => {
@@ -62,20 +76,7 @@ describe('fileIO_DeleteFIle_GetDirectoryContents_CreateFile', () => {
     const testDir = path.join(test_directory,'test');
 
     //should ultimately return deleteDirectoryObservable
-    const existsBranch = function(isDir,dir) {
-      if(isDir) {
-        return fileIO.deleteDirectory(dir);
-      } else {
-        return fileIO.createNewDirectory(dir)
-                .flatMap(() => {
-                  return fileIO.isDirectory(dir)
-                })
-                .flatMap(result => {
-                  assert.equal(result,true);
-                  return fileIO.deleteDirectory(dir);
-                });
-      }
-    };
+   
     fileIO.isDirectory(testDir)
       .flatMap(isDir => {
           
@@ -87,6 +88,33 @@ describe('fileIO_DeleteFIle_GetDirectoryContents_CreateFile', () => {
       .subscribe(finalResult => {
         assert.equal(finalResult,false);
         done();
+      });
+  });
+});
+
+describe('FileIO_LoadFile', () => {
+  it("should load the contents of a file", done => {
+    const testDir = path.join(test_directory,'test');
+    const test_file = 'test.tst';
+    fileIO.isDirectory(testDir)
+      .flatMap(isDir => {          
+        return existsBranch(isDir, testDir)
       })
+      .flatMap(result => {
+        return fileIO.isDirectory(testDir);
+      })
+      .flatMap(finalResult => {
+        return fileIO.createNewDirectory(testDir);
+      })
+      .flatMap(x => {
+        return fileIO.writeJsonToFile(path.join(testDir,test_file), 'test content');
+      })
+      .flatMap(() => {
+        return fileIO.getFileContents(path.join(testDir,test_file));
+      })
+      .subscribe(contents => {
+        assert.equal(contents, '"test content"');
+        done();
+      }); 
   });
 });

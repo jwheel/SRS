@@ -9,7 +9,7 @@ const config = require('./config');
 var v = new Validator();
 v.addSchema(deckSchema.cardSchema, '/Card');
 const deck = {};
-//console.log(v.validate(deck,deckSchema.deckSchema));
+console.log(v.validate(deck,deckSchema.deckSchema));
 
 const deckPath = path.join(__dirname, 'decks'); 
 app.use(bodyParser.json());

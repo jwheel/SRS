@@ -1,77 +1,66 @@
+'use strict';
 const config = require('./../config');
-const card = require('./card');
-const fileIO = require('./../utils/fileIO');
+const CardModel = require('./card');
+const fileIO = require('./../utils/fileIOrxjs');
 const path = require('path');
 const moment = require('moment');
-const deckSchema = {
-    "id": "/Deck",
-    "type":"object",
-    "properties": {
-        "cards": {
-            "type": "array",
-            "items": {"$ref":"/Card"}
+const test_directory = config.app_settings.test_directory
 
+
+const Rx = require('rxjs');
+class Deck {
+
+    constructor(name, directory) {
+        this.name = name;
+        this.cards = [];        
+        this.working_directory = directory;
+    }
+
+    getFileName() {        
+        const fileName = path.join(this.working_directory, this.name + '.srj');
+        return fileName;
+    }
+
+    save() {
+        
+        return fileIO.writeJsonToFile(this.getFileName(), this);        
+    }
+
+    load() {
+        return fileIO.getFileContents(this.getFileName())
+        .flatMap(x => {
+            const deck = JSON.parse(x);
+            this.name = deck.name;
+            this.cards = deck.cards;
+            this.working_directory = deck.working_directory;
+            return Rx.Observable.of(this);
+        });
+    }
+
+    addCard(card) {
+        //the id from a newly added card is assumed to be 0
+        let candidateCard = new CardModel.Card();
+        if(this.cards.length > 0) {
+            const lastCard = this.cards[this.cards.length - 1];
+            candidateCard.id = lastCard.id + 1;            
         }
-    },
-    "required": []
+        candidateCard.question = card.question;
+        candidateCard.answer = card.answer;
+        this.cards.push(candidateCard);
+        return card;
+    }
 
+    updateCard(card) {
+        let candidateCard = this.cards.find(x => x.id === card.id);
+        candidateCard.question = card.question;
+        candidateCard.answer = card.answer;
+        return candidateCard;
+    }
 }
 
-// we also want to define things we can do with a deck here
-const createNewDeck = function(working_path, name, success, error) {
-    // make sure there isn't a deck already created
-    let fileName = path.join(working_path, name + '.srj');
-    let deck = {dateCreated: moment().format(), cards: []};
-    fileIO.createNewFile(fileName, deck , success, error );
 
-};
 
-const fileNameFromDeckName = function(deckName, working_path) {
-    return path.join(working_path, deckName + '.srj');
-}
 
-const checkIfDeckExists = function(deckName) {
-    var fileName = fileNameFromDeckName(deckName);
-    return fileIO.checkIfFile(fileName);
-};
 
-const getDeckFilePaths = function(working_directory, success, error) {
-    fileIO.getDirectoryContents(working_directory, function(items) {
-        var deckFilePaths =items.filter(x => x.endsWith(config.app_settings.file_extension)); 
-        success(deckFilePaths);
-    }, error);
-    
-}
-
-const deleteAllDecks = function(working_directory, success, error) {
-    getDeckFilePaths(working_directory, function(deckFilePaths) {
-        for(let dfp of deckFilePaths) {
-            let fullFilePath = path.join(working_directory, dfp);
-            fileIO.deleteFile(fullFilePath, function() {
-            }, error);
-        }
-        success([]);
-    }, error);
-} 
-
-const getTestDirectory = function() {
-    return config.app_settings.test_directory;
-}
-
-const getTestDeckDirectory = function() {
-    return config.app_settings.test_deck_directory
-}
-
-const getDeckDirectory = function() {
-    return config.app_settings.deck_directory
-}
-
-exports.deckSchema = deckSchema;
-exports.cardSchema = card.cardSchema;
-exports.createNewDeck = createNewDeck;
-exports.fileNameFromDeckName = fileNameFromDeckName;
-exports.checkIfDeckExists = checkIfDeckExists;
-exports.getDeckFilePaths = getDeckFilePaths;
-exports.getTestDeckDirectory = getTestDeckDirectory;
-exports.getDeckDirectory = getDeckDirectory;
-exports.deleteAllDecks = deleteAllDecks;
+exports.Deck = Deck;
+exports.cardSchema = CardModel.cardSchema;
