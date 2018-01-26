@@ -1,63 +1,22 @@
 <!DOCTYPE html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/main.css">
-        <!--<script src="js/vendor/modernizr-2.6.2.min.js"></script>-->
-    </head>
-    <body>
-        <div class="container">
-            <div class="left-panel">
-                <div class="top-header">
-                    <form id="form-deck-create">
-                        <input id="deck-name" type="text"/>
-                        <input id="deck-create" type="button" value="create"/>
-                    </form>
-                </div>
-                <div id="deck-list-container" class="deck-list">
-                    
-                </div>
-            </div>
-            <div class="main-panel">
-                <div class="main-content">
-                    <form class="hidden" id="form-qa">
-                        <!-- Add your site or application content here -->
-                        <textarea name="txt-question" rows="10" cols="100" placeholder="question"></textarea>
-                        <textarea name="txt-answer" rows="10" cols="100" placeholder="answer"></textarea>
-                        <input type="button" value="save"/>
-                    </form>
-                </div>
-                <div class="sub-content">
-                    
-                </div>
-            </div>
-        </div>
-        <script id="deck-list-template" type="text/x-handlebars-template">
-            {{#each names}}
-            <p>{{this}}</p>
-            {{/each}}
-        </script>
-        
-        <!--<div id="test-container">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <!--<script src="js/vendor/modernizr-2.6.2.min.js"></script>-->
+</head>
+<body>
+    
 
-        </div>
-        <script id="testTemplate" type="text/x-handlebars-template">
-            {{#each test-data}}
-                    <p>{{lookup ../inner-array @index}}{{this}}</p>
-            {{/each}}
-        </script>-->
-        <!--<script id="formTemplate" type="text/x-handlebars-template">
-            
-        </script>-->
-        <script src='components/jQuery/jQuery.min.js'></script>
-        <script src='components/handlebars/handlebars.js'></script>
-        <script src='scripts/main.js'></script>
-    </body>
+    <script src='components/jQuery/jQuery.min.js'></script>
+    <script src='scripts/main.js'></script>
+</body>
 </html>
