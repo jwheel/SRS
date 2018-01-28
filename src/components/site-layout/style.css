@@ -1,0 +1,20 @@
+body {
+    margin:0;
+    padding:0;
+}
+
+.main {
+    display:flex;
+}
+
+.main .side-menu {
+    background-color:purple;
+    width:10%;
+    min-width:10em;
+}
+
+.main .main-content {
+    background-color:blue;
+    flex-grow:1;
+}
+
