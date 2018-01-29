@@ -1,0 +1,26 @@
+import srsApp from '~/src/app/srs'
+
+class {
+    onCreate(input) {
+        this.state = {
+            selectedControl: 'deck-list2'
+        }
+    }
+
+    onMount() {
+        var self = this;        
+
+        this.subscribeTo(srsApp)
+            .on('change', function(response) {
+                console.log(response);
+                self.state.selectedControl = response.selectedControl;
+            })
+    }
+}
+
+<if(state.selectedControl === 'deck-list')>
+    <deck-list/>
+</if>
+<else-if(state.selectedControl === 'statistics')>
+    <statistics/>
+</else-if>

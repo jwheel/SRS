@@ -1,4 +1,13 @@
+import srsApp from '~/src/app/srs'
+
+class {
+    onMenuClick(controlName, event, el) {
+        srsApp.selectedControl = controlName;
+    }
+
+}
+
 <ul>
-    <li>Decks</li>
-    <li>Stats</li>
+    <li on-click('onMenuClick', 'deck-list')>Decks</li>
+    <li on-click('onMenuClick', 'statistics')>Stats</li>
 </ul>
