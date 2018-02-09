@@ -1,9 +1,9 @@
-import srsApp from '~/src/app/srs'
+import srsApp from '~/src/app/srs/app'
 
 class {
     onCreate(input) {
         this.state = {
-            selectedControl: 'deck-list2'
+            selectedControl: 'deck-list'
         }
     }
 
@@ -14,13 +14,27 @@ class {
             .on('change', function(response) {
                 console.log(response);
                 self.state.selectedControl = response.selectedControl;
-            })
+            });
+    }
+
+    onSelectDeck(deck) {
+        this.state = {
+            selectedControl: 'deck',
+            deck: deck
+        }
     }
 }
 
 <if(state.selectedControl === 'deck-list')>
-    <deck-list/>
+    <div>
+    <deck-list on-select-deck('onSelectDeck')/>
+    </div>
 </if>
 <else-if(state.selectedControl === 'statistics')>
     <statistics/>
+</else-if>
+<else-if(state.selectedControl === 'deck')>
+   <div>
+    <deck deck=state.deck/>
+</div>
 </else-if>

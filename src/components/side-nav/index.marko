@@ -1,4 +1,4 @@
-import srsApp from '~/src/app/srs'
+import srsApp from '~/src/app/srs/app'
 
 class {
     onMenuClick(controlName, event, el) {
@@ -7,7 +7,8 @@ class {
 
 }
 
-<ul>
+
+<ul.side-nav>
     <li on-click('onMenuClick', 'deck-list')>Decks</li>
     <li on-click('onMenuClick', 'statistics')>Stats</li>
 </ul>

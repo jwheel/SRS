@@ -2,10 +2,10 @@
   "name": "srs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "mocha tests --recursive --watch",
-    "start": "marko-starter server"
+    "start": "node server.js",
+    "test": "mocha tests --recursive --watch"
   },
   "author": "",
   "license": "ISC",
@@ -13,17 +13,25 @@
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
     "nodemon": "^1.12.1",
+    "require-self-ref": "^2.0.1",
     "sinon": "^4.1.2"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "body-parser": "^1.18.2",
+    "browser-request": "^0.3.3",
     "express": "^4.16.2",
+    "font-awesome": "^4.7.0",
     "jsonschema": "^1.2.0",
+    "lasso": "^3.1.2",
     "lasso-marko": "^2.4.0",
     "lodash": "^4.17.4",
     "marko": "^4.7.5",
     "marko-starter": "^2.0.3",
     "moment": "^2.19.2",
+    "raptor-args": "^1.0.3",
+    "raptor-util": "^1.1.2",
+    "require-self-ref": "^2.0.1",
     "rimraf": "^2.6.2",
     "rxjs": "^5.5.6"
   }

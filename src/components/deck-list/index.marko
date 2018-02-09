@@ -1,1 +1,69 @@
-<p>Deck List</p>
+import srsApp from '~/src/app/srs/app'
+
+class {
+    onCreate(input) {
+        this.state = {
+            decks: []
+        }
+    }
+
+    onMount() {
+        let self = this.state;        
+        let tempDecks = [];
+        this.subscribeTo(srsApp)
+            .on('decks-fetched', function(response) {
+
+                for (var i = 0, len = response.decks.length; i< len; i++) {
+                    
+                    tempDecks.push({
+                        id: i,
+                        name:response.decks[i], 
+                        editing:false,
+                        isNew:false
+                    });
+                }
+                self.decks = tempDecks;
+            });
+        srsApp.getDecks();
+    }
+    
+    createDeck() {
+        //we need to add a new deck to decks but in an immutable way...
+        this.state.decks = srsApp.pushItem(this.state.decks, {
+            id: this.state.decks.length,
+            name: '', 
+            editing: true,
+            isNew:true});
+        
+    }
+
+    onUpdateDeck(deck) {
+        var updateDeck = this.state.decks.find(x => x.id === deck.id);
+        updateDeck.name = deck.name;
+        updateDeck.editing = deck.editing;
+        updateDeck.isNew = deck.isNew;        
+    }
+
+    onSelectDeck(deck) {
+        this.emit('select-deck', deck);
+    }
+    
+}
+
+style {
+.deck-list.flex-container {
+        display:flex;
+            flex-wrap: wrap;
+        align-content: space-around;
+    }
+    .big-plus {
+        margin-left:0.5em;
+        margin-top:0.4em;
+    }
+}
+<div.deck-list.flex-container>
+    <for(deck in state.decks)>
+       <deck-tile on-update-deck('onUpdateDeck') on-select-deck('onSelectDeck') deck=deck /> 
+    </for>
+    <div.deck-list.list-box on-click('createDeck')><i.fa.fa-plus.big-plus.fa-5x></i></div>
+</div>

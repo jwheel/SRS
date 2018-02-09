@@ -82,6 +82,11 @@ let getDirectoryContents = function(filePath) {
     return getDirContents(filePath);
 };
 
+let renameFile = function(oldFilePath, newFilePath) {
+    let rename$ = Rx.Observable.bindNodeCallback(fs.rename);
+    return rename$(oldFilePath, newFilePath);
+}
+
 exports.isFile = isFile;
 exports.isDirectory = isDirectory;
 exports.writeJsonToFile = writeJsonToFile;
@@ -91,3 +96,4 @@ exports.deleteDirectory = deleteDirectory;
 exports.deleteFile = deleteFile;
 exports.getDirectoryContents = getDirectoryContents;
 exports.getFileContents = getFileContents;
+exports.renameFile = renameFile;

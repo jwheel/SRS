@@ -1,0 +1,38 @@
+import srsDeck from '~/src/app/srs/deck'
+
+class {
+    onInput(input) {
+        this.state = {
+            deckMeta : input.deck,
+            deck: {},
+            state: ''
+        };
+
+        var self = this;        
+
+        this.subscribeTo(srsDeck)
+            .on('deck-fetched', function(response) {
+                console.log(response);
+                self.state.deck = response.deck;
+            });
+        srsDeck.getDeck(input.deck.name);
+    }
+
+    addCardsClicked() {
+        this.state.state = 'adding';
+    }
+    quizClicked() {
+        this.state.state = 'quizing';
+    }
+}
+
+<h4>${state.deckMeta.name}</h4> 
+<input type="button" value="Quiz" on-click('quizClicked')/>
+<input type="button" value="Add cards" on-click('addCardsClicked')>
+
+<if(state.state === 'adding')>
+    <deck-add name=state.deckMeta.name/>
+</if>
+<else-if(state.state === 'quizing')>
+    whatever
+</else-if>

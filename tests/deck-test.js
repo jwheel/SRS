@@ -1,5 +1,6 @@
 const assert = require('assert');
 const fileIO = require('./../utils/fileIOrxjs');
+const AppModel = require('./../models/app');
 const DeckModel = require('./../models/deck');
 const CardModel = require('./../models/card');
 const chai = require('chai');
@@ -147,4 +148,20 @@ describe('Deck_Update', () => {
             done();
         });        
     })
-})
+});
+
+describe('App_GetDecks', () => {
+    it('should return a list of decks for the given directory', done => {
+        let app = new AppModel.App();
+        app.getDecks(test_directory)
+        .subscribe(result => {
+            console.log(result);
+            
+        },
+        error => {
+
+        }, () => {
+            done();
+        })
+    });
+});

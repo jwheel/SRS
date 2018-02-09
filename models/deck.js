@@ -31,7 +31,18 @@ class Deck {
         .flatMap(x => {
             const deck = JSON.parse(x);
             this.name = deck.name;
-            this.cards = deck.cards;
+            for(let i = 0; i < deck.cards.length;i++) {
+                let card = new CardModel.Card();
+                let cc = deck.cards[i];
+                
+                card.id = cc.id;
+                card.question = cc.question;
+                card.answer = cc.answer;
+                card.due_date = cc.due_date;
+                card.create_date = cc.create_date;
+                card.scores = cc.scores;
+                this.cards.push(card);
+            }
             this.working_directory = deck.working_directory;
             return Rx.Observable.of(this);
         });
@@ -55,6 +66,18 @@ class Deck {
         candidateCard.question = card.question;
         candidateCard.answer = card.answer;
         return candidateCard;
+    }
+
+    renameDeck(oldName, newName, directory) {
+        
+        let oldPath = path.join(directory, oldName + '.srj');
+        let newPath = path.join(directory,newName + '.srj');
+        let $this = this;
+        return fileIO.renameFile(oldPath, newPath)
+        .flatMap(result => {
+            $this.name = newName;     
+            return Rx.Observable.of(this);       
+        });
     }
 }
 

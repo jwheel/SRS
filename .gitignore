@@ -14,3 +14,4 @@ dump.rdb
 /decks/*
 sampleGetRequest.json
 samplePostRequest.json
+/static/*

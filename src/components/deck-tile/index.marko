@@ -1,0 +1,96 @@
+import srsApp from '~/src/app/srs/app'
+
+class {
+
+    onInput(input) {
+        var deckName = input.deck.name;
+        var editing = input.deck.editing;
+        this.state = {
+            deck : {
+                id: input.deck.id,
+                name: deckName,
+                editing: editing,
+                oldName:'',
+                newName:'',
+                isNew: input.deck.isNew 
+            }
+        }
+    }
+
+    setEdit(name, event) {
+        this.state.deck.editing = true;
+        this.state.deck = srsApp.cloneDeep(this.state.deck);
+        event.stopPropagation();
+    }
+
+    save(name,event) {
+        let nameInput = this.getEl('text-edit');
+        let newName = nameInput.value;
+        if(this.state.deck.isNew) {
+            srsApp.createNewDeck(newName);
+        }
+        else {
+            srsApp.renameDeck(name,newName);            
+        }
+        
+        this.state.deck.editing = false;
+        this.state.deck.isNew = false;
+        this.state.deck.name = newName;
+        this.state.deck = srsApp.cloneDeep(this.state.deck);
+        this.emit('update-deck', this.state.deck);
+        event.stopPropagation();
+    }
+
+    tileClicked() {
+        this.emit('select-deck', this.state.deck);
+    }
+
+    inputClicked() {
+        event.stopPropagation();
+    }
+}
+
+style {
+    .deck-list.list-box {
+        display:flex;
+        justify-content: space-between;
+        width:9.25em;
+        height:9.25em;
+        background-color:#555;
+        color:#eee;
+        border:1px solid #555;
+        margin:2em;
+        padding:0.75em;
+    }
+    .deck-list.list-box:hover {
+        color:#555;
+        background-color:#eee;   
+        cursor:pointer;
+    }
+    span.text-display {
+        display:inline-block;
+    }
+    span.button-display {
+        display:inline-block;
+    }
+    .edit:hover {
+        color:#09f;
+    }
+    .text-rename {
+        height:1.5em;
+        width:9em;
+    }
+}
+
+<div.deck-list.list-box on-click('tileClicked')> 
+<if(state.deck.editing)>
+<input.text-rename key="text-edit" type="text" on-click('inputClicked') value=state.deck.name/>
+<span on-click('save', state.deck.name)><i.edit.fa.fa-save></i></span>
+</if>
+<else>
+<span.text-display>${state.deck.name}</span>
+<span.button-display on-click('setEdit', state.deck.name)><i.edit.fa.fa-pencil-alt></i></span>
+</else>
+
+
+</div>
