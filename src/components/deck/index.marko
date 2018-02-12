@@ -12,8 +12,23 @@ class {
 
         this.subscribeTo(srsDeck)
             .on('deck-fetched', function(response) {
-                console.log(response);
-                self.state.deck = response.deck;
+                
+                let tempCards = [];
+                 for (let i = 0, len = response.deck.cards.length; i < len; i++) {
+                    let card = response.deck.cards[i];
+                    tempCards.push({
+                        id: card.id,
+                        question:card.question,
+                        answer: card.answer,
+                        due_date: card.due_date,
+                        create_date: card.create_date                
+                    });
+                }
+                self.state.deck = {
+                    name: response.deck.name,
+                    cards:tempCards,
+                    working_directory:response.working_directory
+                };
             });
         srsDeck.getDeck(input.deck.name);
     }
@@ -26,6 +41,12 @@ class {
     }
 }
 
+style {
+    h4 {
+        font-size:30px;
+    }
+}
+
 <h4>${state.deckMeta.name}</h4> 
 <input type="button" value="Quiz" on-click('quizClicked')/>
 <input type="button" value="Add cards" on-click('addCardsClicked')>
@@ -34,5 +55,5 @@ class {
     <deck-add name=state.deckMeta.name/>
 </if>
 <else-if(state.state === 'quizing')>
-    whatever
+    <deck-quiz deck=state.deck/>
 </else-if>

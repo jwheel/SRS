@@ -7,31 +7,39 @@ class {
         }
     }
     onInput(input) {
-        console.log(input);
         this.state = {
             name: input.name
         }
     }
  
     saveQuestion() {
-        let questionInput = this.getEl('text-question').value;
-        let answerInput = this.getEl('text-answer').value;
-        console.log('Printing question and answer');
-        console.log(questionInput);
-        console.log(answerInput);
-        console.log(this.state.name);
+        let questionInput = this.getEl('text-question');
+        let answerInput = this.getEl('text-answer');
+  
         srsDeck.addCard(this.state.name, {
             deckName: this.state.name,
-            question:questionInput, 
-            answer:answerInput});
+            question:questionInput.value, 
+            answer:answerInput.value});
+
+        questionInput.value = '';
+        answerInput.value = '';
+        
     }
 }
 
+style {
+    .txtQuestion {
+        font-size: 2em;
+    }
+    .txtAnswer {
+        font-size: 2em;
+    }
+}
 
 <p>Question</p>
-<textarea name="txtQuestion" key="text-question" cols="40" rows="5" placeholder="Question"></textarea>
+<textarea.txtQuestion name="txtQuestion" key="text-question" cols="40" rows="5" placeholder="Question"></textarea>
 
 <p>Answer</p>
-<textarea name="txtAnswer" key="text-answer" cols="40" rows="5" placeholder="Answer"></textarea>
+<textarea.txtAnswer name="txtAnswer" key="text-answer" cols="40" rows="5" placeholder="Answer"></textarea>
 
 <input type="button" on-click('saveQuestion') value="Save"/>

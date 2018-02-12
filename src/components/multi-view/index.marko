@@ -12,7 +12,6 @@ class {
 
         this.subscribeTo(srsApp)
             .on('change', function(response) {
-                console.log(response);
                 self.state.selectedControl = response.selectedControl;
             });
     }
@@ -25,6 +24,24 @@ class {
     }
 }
 
+
+style {
+    input[type=button] {
+        background-color: #333;
+        color: #eee;
+        min-height: 40px;
+        min-width: 100px;
+        margin: 10px;
+        margin-left: 0px;
+        border: none;
+        font-size: 20px;
+        padding:10px;
+    }
+    input[type=button]:hover {
+        color:#adf;
+        cursor:pointer;
+    }
+}
 <if(state.selectedControl === 'deck-list')>
     <div>
     <deck-list on-select-deck('onSelectDeck')/>

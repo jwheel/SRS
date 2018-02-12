@@ -33,6 +33,7 @@
     "raptor-util": "^1.1.2",
     "require-self-ref": "^2.0.1",
     "rimraf": "^2.6.2",
-    "rxjs": "^5.5.6"
+    "rxjs": "^5.5.6",
+    "taucharts": "^2.0.0"
   }
 }

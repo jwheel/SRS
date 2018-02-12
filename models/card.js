@@ -30,13 +30,14 @@ class Card {
         //this magic number is used to convert days to earth rotations in terms of seconds
         const numSeconds = numDays*86164;
         
-        this.due_date = moment().add(numSeconds, 's');        
+        this.due_date = moment().add(numSeconds, 's');
+        return Rx.Observable.of(this);
     }
 
     fail() {
         this.scores.push(0);
         this.due_date = moment().add(1, 'days');
-        
+        return Rx.Observable.of(this);
     }
 }
 

@@ -12,7 +12,7 @@ var markoExpress = require('marko/express');
 const config = require('./config.js');
 const deck_directory = config.app_settings.deck_directory
 var template = require('./src');
-
+const _ = require('lodash');
 
 require('lasso').configure({
     plugins: [
@@ -27,8 +27,6 @@ var port = process.env.PORT || 8070;
 
 app.use(require('lasso/middleware').serveStatic());
 app.use(bodyParser.json());
-
-
 
 app.get('/api/decks',function(req, res) {    
     let appInternal = new AppModel.App();
@@ -57,6 +55,7 @@ app.get('/api/decks/:name', function(req, res) {
         res.json(JSON.stringify(deck));
     });
 });
+
 app.post('/api/decks/:name', function(req, res) {
     let name = req.params.name;
 
@@ -90,10 +89,7 @@ app.post('/api/decks/:name1/:name2', function(req,res) {
 
 app.post('/api/cards',function(req,res) {
     
-    
-    console.log(req.body);
     let deckName = req.body.deckName;
-    console.log(deck_directory);
     let deck = new DeckModel.Deck(deckName, deck_directory);
 
     deck.load()
@@ -118,8 +114,38 @@ app.post('/api/cards',function(req,res) {
     });
 });
 
-app.get('/', require('./src'));
+app.put('/api/cards/:id/:pass', function(req, res) {
+    let deckName = req.body.deckName;
+    let deck = new DeckModel.Deck(deckName, deck_directory);
+    let id = req.params.id;
+    
+    let pass = req.params.pass == 1 ? true : false;
+    deck.load()
+    .flatMap(x => {
+        
+        let card = _.find(x.cards,c => {
+            return c.id == id;
+        });
+        return Rx.Observable.of(card);    
+    })
+    .flatMap(c => {
+        if(pass) {
+            return c.pass();
+        } else {
+            return c.fail();
+        }        
+    })
+    .flatMap(returnCard => {
+        return deck.save();
+    })
+    .subscribe(result => {
+        res.json({ok:true});
+    }, error => {
+            console.log(error);
+    });
+});
 
+app.get('/', require('./src'));
 
 app.listen(port, function() {
     console.log('Listening on port %d', port);

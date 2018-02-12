@@ -1,0 +1,113 @@
+import srsDeck from '~/src/app/srs/deck';
+import moment from 'moment';
+class {
+    onCreate() {
+        this.state = {
+            deckName: '',
+            cards:[],
+            index:0,
+            currentCard: {},
+            showAnswer: false
+        }
+    }
+    onInput(input) {
+        let deck = input.deck;
+        let now = moment();
+        
+        if(deck.cards && deck.cards.length > 0) {
+            let dueCards = deck.cards.filter(x => { 
+                return moment(x.due_date).isBefore(now);})
+            console.log(dueCards);
+            this.state = {
+                deckName: deck.name,
+                cards: dueCards,
+                index:0,
+                currentCard: dueCards.length > 0 ? dueCards[0] : {},
+                showAmswer:false
+            }
+        }
+    }
+    next() {
+        let index = ++this.state.index;
+        this.state.showAnswer =false;
+        if(!(index >= this.state.cards.length)) {
+            this.state.currentCard = this.state.cards[index];
+        }
+    }
+    passClick() {
+        srsDeck.passCard(this.state.deckName, this.state.currentCard);
+        this.next();
+    }
+    failClick() {
+        srsDeck.failCard(this.state.deckName, this.state.currentCard);        
+        this.next();
+    }
+
+    toggleAnswer() {
+        this.state.showAnswer = !this.state.showAnswer;
+    }
+    keyDown(event) {
+        console.log(event);
+    }
+}
+
+style {
+    .display-box {
+        background-color:#adf;
+        color:#333;
+        display:inline-block;
+        min-height:200px;
+        min-width:600px;
+        max-width:600px;
+        font-size:1.5em;
+        margin-top:0.5em;
+        margin-bottom:0.5em;
+        white-space: pre-line;
+        font-family:'Yu Mincho Regular';
+    }
+    .display-box.srs-answer {
+        font-size:1.5em;
+    }
+    input[type=button].btn-pass {
+        color:#adf;
+    }
+    input[type=button].btn-fail {
+        color:#adf;
+    }
+    input[type=button].btn-pass:hover {
+        color:green;
+    }
+    input[type=button].btn-fail:hover {
+        color:red;
+    }
+}
+
+<div onKeyDown('keyDown')>
+    <if(state.currentCard && state.currentCard != {} && state.index < state.cards.length)>
+        <div class="display-box srs-question">
+            ${state.currentCard.question}
+        </div>
+        <div></div>
+        <if(state.showAnswer)>
+        <div class="display-box srs-answer"> 
+            ${state.currentCard.answer}
+        </div>
+        </if>
+        <else>
+            <div class="display-box "> 
+                
+            </div>
+        </else>
+        <div>
+            <input.btn-pass type="button" value="Pass" on-click('passClick')/>
+            <input.btn-fail type="button" value="Fail" on-click('failClick')/>
+            <input type="button" value="Toggle Answer" on-click('toggleAnswer')/>
+        </div>
+    </if>
+    <else>
+    <div>
+        <p>Done quizzing!</p>
+        </div>
+    </else>
+
+</div>
