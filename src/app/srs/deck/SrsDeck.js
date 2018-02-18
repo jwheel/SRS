@@ -1,76 +1,66 @@
-var EventEmitter = require('events');
-const axios = require('axios');
 
 const _ = require('lodash');
+const Rx = require('rxjs');
 
 
-class SrsDeck extends EventEmitter {
+class SrsDeck {
     
-     constructor() {
-        super();
-        this._deck = {};
-        
-    }
+    constructor() {
 
-    set deck(thisDeck) {
-        this._deck = thisDeck;
-        this._emitDeckLoad();
-    }
-    get deck() {
-        return this._deck;
     }
 
     getDeck(name) {
         const $this = this;
-        axios.get(`api/decks/${name}`)
-        .then(response => {
-            $this.deck= JSON.parse(response.data);            
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    }
-
-    _emitDeckLoad() {
-        this.emit('deck-fetched', {
-            deck: this.deck
+         return Rx.Observable
+        .ajax(`api/decks/${name}`)
+        .map(e => {
+            return JSON.parse(e.response);
         });
     }
 
     addCard(deckName, card) {
         const $this = this;
-
-        axios.post(`api/cards`,card)
-        .then(response => {
-            
+         return Rx.Observable.ajax({
+            url:`api/cards`,
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',                
+            },
+            body: {
+                deckName:deckName,
+                card:card}
         })
-        .catch(error => {
-            console.log(error);
-        });
+        .map(e => e.response);        
     }
 
     passCard(deckName, card) {
         const $this = this;
-
-        axios.put(`api/cards/${card.id}/1`, {deckName:deckName})
-        .then(response => {
-            
+         return Rx.Observable.ajax({
+            url:`api/cards/${card.id}/1`,
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',                
+                },
+            body: {
+                deckName:deckName,
+            }
         })
-        .catch(error => {
-            console.log(error);
-        });
+        .map(e => e.response);
     }
 
     failCard(deckName, card) {
         const $this = this;
-
-        axios.put(`api/cards/${card.id}/0`, {deckName:deckName})
-        .then(response => {
-            
+         return Rx.Observable.ajax({
+            url:`api/cards/${card.id}/0`,
+            method: 'PUT',
+            headers: {
+            'Content-Type': 'application/json',                
+            },
+            body: {
+                deckName:deckName,
+            }
         })
-        .catch(error => {
-            console.log(error);
-        });
+        .map(e => e.response);
     }
 }
 

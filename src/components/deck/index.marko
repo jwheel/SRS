@@ -8,29 +8,27 @@ class {
             state: ''
         };
 
-        var self = this;        
+        let self = this;
 
-        this.subscribeTo(srsDeck)
-            .on('deck-fetched', function(response) {
-                
-                let tempCards = [];
-                 for (let i = 0, len = response.deck.cards.length; i < len; i++) {
-                    let card = response.deck.cards[i];
-                    tempCards.push({
-                        id: card.id,
-                        question:card.question,
-                        answer: card.answer,
-                        due_date: card.due_date,
-                        create_date: card.create_date                
-                    });
-                }
-                self.state.deck = {
-                    name: response.deck.name,
+        srsDeck.getDeck(input.deck.name)
+        .subscribe(deck => {
+            
+            let tempCards = deck.cards
+                    .map(card => {
+                        return {
+                                id: card.id,
+                                question:card.question,
+                                answer: card.answer,
+                                due_date: card.due_date,
+                                create_date: card.create_date
+                            }
+                    }); 
+            self.state.deck = {
+                    name: deck.name,
                     cards:tempCards,
-                    working_directory:response.working_directory
+                    working_directory:deck.working_directory
                 };
-            });
-        srsDeck.getDeck(input.deck.name);
+        });
     }
 
     addCardsClicked() {

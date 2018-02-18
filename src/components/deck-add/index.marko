@@ -19,11 +19,11 @@ class {
         srsDeck.addCard(this.state.name, {
             deckName: this.state.name,
             question:questionInput.value, 
-            answer:answerInput.value});
-
-        questionInput.value = '';
-        answerInput.value = '';
-        
+            answer:answerInput.value})
+            .subscribe(response => {
+                questionInput.value = '';
+                answerInput.value = '';        
+            });
     }
 }
 
@@ -41,5 +41,6 @@ style {
 
 <p>Answer</p>
 <textarea.txtAnswer name="txtAnswer" key="text-answer" cols="40" rows="5" placeholder="Answer"></textarea>
-
+<div>
 <input type="button" on-click('saveQuestion') value="Save"/>
+</div>

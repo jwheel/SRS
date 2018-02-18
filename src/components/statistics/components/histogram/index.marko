@@ -1,0 +1,35 @@
+class {
+    onCreate() {
+        this.state = {
+            name:'',
+            id: 0,
+            data: []
+        }
+    }
+    onInput(input) {
+        this.state.data = input.data;
+        this.state.name = input.name;
+        this.state.id = input.id;
+
+        
+    }
+    onMount() {
+        if(this.state.data && this.state.data.length > 0) {
+            let chart = new tauCharts.Chart({
+                data: this.state.data,
+                type: 'bar',
+                x: 'due_date',
+                y: 'cards_due'
+            });
+            chart.renderTo("#histogram_" + this.state.id);
+        }
+    }
+}
+
+
+<div.graph-container>
+    <p>${state.name}</p>
+    <div id=("histogram_" + state.id) key=("histogram_" + state.id)>
+    
+    </div>
+</div>

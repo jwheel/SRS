@@ -95,8 +95,8 @@ app.post('/api/cards',function(req,res) {
     deck.load()
     .flatMap(x => {
         let card = {
-            question:req.body.question,
-            answer:req.body.answer
+            question:req.body.card.question,
+            answer:req.body.card.answer
         };
         return Rx.Observable.of(card);    
     })
@@ -118,7 +118,7 @@ app.put('/api/cards/:id/:pass', function(req, res) {
     let deckName = req.body.deckName;
     let deck = new DeckModel.Deck(deckName, deck_directory);
     let id = req.params.id;
-    
+    console.log(req.body);
     let pass = req.params.pass == 1 ? true : false;
     deck.load()
     .flatMap(x => {

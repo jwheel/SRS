@@ -17,7 +17,7 @@ class {
         if(deck.cards && deck.cards.length > 0) {
             let dueCards = deck.cards.filter(x => { 
                 return moment(x.due_date).isBefore(now);})
-            console.log(dueCards);
+            
             this.state = {
                 deckName: deck.name,
                 cards: dueCards,
@@ -35,20 +35,25 @@ class {
         }
     }
     passClick() {
-        srsDeck.passCard(this.state.deckName, this.state.currentCard);
-        this.next();
+        let self = this;
+        srsDeck.passCard(this.state.deckName, this.state.currentCard)
+        .subscribe(response => {
+            self.next();
+        });
+        
     }
     failClick() {
-        srsDeck.failCard(this.state.deckName, this.state.currentCard);        
-        this.next();
+        let self = this;
+        srsDeck.failCard(this.state.deckName, this.state.currentCard)
+        .subscribe(response => {
+            self.next();
+        });
     }
 
     toggleAnswer() {
         this.state.showAnswer = !this.state.showAnswer;
     }
-    keyDown(event) {
-        console.log(event);
-    }
+
 }
 
 style {
@@ -102,6 +107,7 @@ style {
             <input.btn-pass type="button" value="Pass" on-click('passClick')/>
             <input.btn-fail type="button" value="Fail" on-click('failClick')/>
             <input type="button" value="Toggle Answer" on-click('toggleAnswer')/>
+            <span>${state.index} of ${state.cards.length} Cards left</span>
         </div>
     </if>
     <else>

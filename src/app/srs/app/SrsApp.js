@@ -1,80 +1,46 @@
-var EventEmitter = require('events');
-const axios = require('axios');
-
 const moment = require('moment');
 const _ = require('lodash');
-class SrsApp extends EventEmitter {
+const Rx = require('rxjs');
 
+class SrsApp {
+
+    
     constructor() {
-        super();
-
-        this._selectedControl = 'deck-list';
-        this._decks = [];
+        this.selectedControl = new Rx.Subject();
+        this.selectedControl$ = this.selectedControl.asObservable();
         
     }
 
 
-    set decks(deckList) {
-        this._decks = deckList;
-        this._emitDeckLoad();
-    }
-    get decks() {
-        return this._decks;
-    }
-
-    set selectedControl(newSelectedControl) {
-        this._selectedControl = newSelectedControl;
-        this._emitChange();
-    }
-
-    get selectedControl() {
-        return this._selectedControl;
-    }
-
-    
-    _emitChange() {
-        this.emit('change', {
-            selectedControl: this.selectedControl
-        });
-    }
-
-    _emitDeckLoad() {
-        this.emit('decks-fetched', {
-            decks: this.decks
-        });
+    changeSelectedControl(controlName) {
+        this.selectedControl.next(controlName)
     }
 
     getDecks() {
         const $this = this;
-        axios.get('api/decks')
-        .then(response => {
-            $this.decks = response.data.decks;            
-        })
-        .catch(error => {
-            console.log(error);
-        });
+        return Rx.Observable
+        .ajax('api/decks')
+        .map(e => e.response);
     }
 
     renameDeck(oldName, newName) {
         const $this = this;
-        axios.post(`api/decks/${oldName}/${newName}`)
-        .then(response => {
-            console.log(response);
+        return RanRxge.Observable.ajax({
+            url:`api/decks/${oldName}/${newName}`,
+            method: 'POST',
+            body: {}
         })
-        .catch(error => {
-            console.log(error);
-        });
+        .map(e => e.response);
     }
 
     createNewDeck(name) {
         const $this = this;
-        axios.post(`api/decks/${name}`)
-        .then(response => {
-            console.log(response);
+        return Rx.Observable.ajax({
+            url:`api/decks/${name}`,
+            method: 'POST',
+            body: {}
         })
-        .catch(err => {
-            console.log(err);
-        });
+        .map(e => e.response);   
     }
 
     pushItem(array, item) {
@@ -84,10 +50,6 @@ class SrsApp extends EventEmitter {
         }
         newArray.push(item);
         return newArray;
-    }
-
-    cloneDeep(deck) {
-        return _.cloneDeep(deck);
     }
 }
 

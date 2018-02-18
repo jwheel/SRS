@@ -10,21 +10,17 @@ class {
     onMount() {
         let self = this.state;        
         let tempDecks = [];
-        this.subscribeTo(srsApp)
-            .on('decks-fetched', function(response) {
-
-                for (var i = 0, len = response.decks.length; i< len; i++) {
-                    
-                    tempDecks.push({
-                        id: i,
-                        name:response.decks[i], 
-                        editing:false,
-                        isNew:false
-                    });
-                }
-                self.decks = tempDecks;
+        let index = 0;
+        srsApp.getDecks()
+        .subscribe(x => {
+            
+            self.decks = x.decks.map(item => { return {
+                id:index++,
+                name: item,
+                editing:false,
+                isNew:false};
             });
-        srsApp.getDecks();
+        });     
     }
     
     createDeck() {
@@ -66,4 +62,5 @@ style {
        <deck-tile on-update-deck('onUpdateDeck') on-select-deck('onSelectDeck') deck=deck /> 
     </for>
     <div.deck-list.list-box on-click('createDeck')><i.fa.fa-plus.big-plus.fa-5x></i></div>
+
 </div>

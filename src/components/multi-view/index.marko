@@ -1,6 +1,7 @@
 import srsApp from '~/src/app/srs/app'
 
 class {
+
     onCreate(input) {
         this.state = {
             selectedControl: 'deck-list'
@@ -9,11 +10,9 @@ class {
 
     onMount() {
         var self = this;        
-
-        this.subscribeTo(srsApp)
-            .on('change', function(response) {
-                self.state.selectedControl = response.selectedControl;
-            });
+        srsApp.selectedControl$.subscribe(x => {
+            self.state.selectedControl = x;            
+        });
     }
 
     onSelectDeck(deck) {
@@ -52,6 +51,6 @@ style {
 </else-if>
 <else-if(state.selectedControl === 'deck')>
    <div>
-    <deck deck=state.deck/>
-</div>
+       <deck deck=state.deck/>        
+    </div>
 </else-if>

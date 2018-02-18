@@ -1,5 +1,5 @@
 import srsApp from '~/src/app/srs/app'
-
+import lodash from 'lodash'
 class {
 
     onInput(input) {
@@ -19,7 +19,8 @@ class {
 
     setEdit(name, event) {
         this.state.deck.editing = true;
-        this.state.deck = srsApp.cloneDeep(this.state.deck);
+
+        this.state.deck = lodash.cloneDeep(this.state.deck);
         event.stopPropagation();
     }
 
