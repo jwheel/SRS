@@ -6,6 +6,7 @@ const Rx = require('rxjs');
 const AppModel = require('./models/app');
 const DeckModel = require('./models/deck');
 const CardModel = require('./models/card');
+const StatModel = require('./models/statistics');
 const bodyParser = require('body-parser');
 var express = require('express');
 var markoExpress = require('marko/express');
@@ -13,7 +14,8 @@ const config = require('./config.js');
 const deck_directory = config.app_settings.deck_directory
 var template = require('./src');
 const _ = require('lodash');
-
+const wordalizer = require('./utils/wordalizer');
+const path = require('path');
 require('lasso').configure({
     plugins: [
         'lasso-marko'
@@ -118,7 +120,6 @@ app.put('/api/cards/:id/:pass', function(req, res) {
     let deckName = req.body.deckName;
     let deck = new DeckModel.Deck(deckName, deck_directory);
     let id = req.params.id;
-    console.log(req.body);
     let pass = req.params.pass == 1 ? true : false;
     deck.load()
     .flatMap(x => {
@@ -144,7 +145,36 @@ app.put('/api/cards/:id/:pass', function(req, res) {
             console.log(error);
     });
 });
+app.get('/api/statistics/histogram/:deckName', function(req,res) {
+    let deckName = req.params.deckName;
 
+    let stats = new StatModel.Statistics();
+
+    stats.getDueDateHistogram(deckName, deck_directory)
+    .subscribe(result => {
+        res.json(result);
+    }, error => {
+        console.log(error);
+    });
+});
+
+app.get('/word_list', function(req, res) {
+    
+    let inputFile = path.join(deck_directory, 'nihongo.txt');
+    wordalizer.uniqueify(inputFile)
+    .subscribe(result => {
+        console.log(result.length);
+        res.json(result);
+    });
+});
+
+app.get('/review_list', function(req, res) {
+
+    wordalizer.buildDictionary(deck_directory)
+    .subscribe(result => {
+       res.json(result); 
+    });
+});
 app.get('/', require('./src'));
 
 app.listen(port, function() {

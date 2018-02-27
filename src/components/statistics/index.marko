@@ -1,1 +1,39 @@
+import srsApp from '~/src/app/srs/app'
+import lodash from 'lodash';
+class {
+
+    onCreate() {
+        this.state = {
+            decks:[],     
+            index:0       
+        }
+    }
+    onMount() {
+        
+        let $t = this;
+        let thisIndex = 0;
+        srsApp.getDecks()
+        .subscribe(response => {
+            let decks = response.decks;
+            thisIndex =  thisIndex += 1;
+            $t.state.decks = decks.map((x, i) => {  
+                return {
+                    name:x,
+                    index:i
+                };
+            });     
+                
+        }, error => {
+            console.log(error);
+        }); 
+    }
+}
+
+
 <p>Statistics</p>
+<div>
+${state.index}
+    <for(deck in state.decks)>
+        <histogram name=deck.name index=deck.index />
+    </for>
+</div>

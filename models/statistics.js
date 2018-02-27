@@ -8,8 +8,6 @@ const moment = require('moment');
 const test_directory = config.app_settings.test_directory
 const _ = require('lodash');
 
-const Rx = require('rxjs');
-
 class Statistics {
 
     constructor() {
@@ -18,7 +16,7 @@ class Statistics {
 
     getDueDateHistogram(deckName, directory) {
         directory = directory || config.app_settings.deck_directory;
-        const days = _.range(364).map(x => new moment().startOf(year).add(x, 'd'));
+        const days = _.range(364).map(x => new moment().startOf('year').add(x, 'd'));
 
         const histogram = [];
 
@@ -26,13 +24,16 @@ class Statistics {
         return deck.load()
         .flatMap(thisDeck => {
             days.forEach(day => {
-                nextDay = day.clone().add(1,'d');
+                let nextDay = day.clone().add(1,'d');
                 let numCardsDue = thisDeck.cards
-                .filter(x => { x.due_date.isBetween(day, nextDay, 'ms')
+                .filter(x => { 
+                    let due_date = new moment(x.due_date);
+                    return due_date.isBetween(day, nextDay, 'ms');
                                 }).length;
-                histogram.push({day:day, numCardsDue:numCardsDue});
+                let display = day.format('YYYY-MM-DD')
+                histogram.push({due_date:display, cards_due:numCardsDue});
             });
-            console.log(histogram);
+            
             return Rx.Observable.of(histogram);
         });
     }

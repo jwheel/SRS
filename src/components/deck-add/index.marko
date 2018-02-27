@@ -18,8 +18,8 @@ class {
   
         srsDeck.addCard(this.state.name, {
             deckName: this.state.name,
-            question:questionInput.value, 
-            answer:answerInput.value})
+            question:questionInput.value + ' ', 
+            answer:answerInput.value + ' '})
             .subscribe(response => {
                 questionInput.value = '';
                 answerInput.value = '';        

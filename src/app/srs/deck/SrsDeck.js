@@ -62,6 +62,14 @@ class SrsDeck {
         })
         .map(e => e.response);
     }
+
+    getDueDateHistogram(deckName) {
+        return Rx.Observable
+        .ajax(`api/statistics/histogram/${deckName}`)
+        .map(e => {
+            return e.response;
+        });
+    }
 }
 
 module.exports = SrsDeck;
