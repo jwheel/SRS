@@ -158,7 +158,7 @@ app.get('/api/statistics/histogram/:deckName', function(req,res) {
     });
 });
 
-app.get('/word_list', function(req, res) {
+app.get('/api/word_list', function(req, res) {
     
     let inputFile = path.join(deck_directory, 'nihongo.txt');
     wordalizer.uniqueify(inputFile)
@@ -168,12 +168,30 @@ app.get('/word_list', function(req, res) {
     });
 });
 
-app.get('/review_list', function(req, res) {
+app.get('/api/review_list', function(req, res) {
 
     wordalizer.buildDictionary(deck_directory)
     .subscribe(result => {
        res.json(result); 
     });
+});
+
+app.post('/api/question_list', function(req, res) {
+    let deckName = '日本語';
+    let deck = new DeckModel.Deck(deckName, deck_directory);
+    deck.load()
+    .flatMap(retDeck => {
+      
+        return retDeck.writeQuestionFile();
+    })
+    .subscribe(result => {
+        console.log(result);
+    }, error => {
+        console.log(error);
+    }, () => {
+         res.json({ok:true});
+    });
+    
 });
 app.get('/', require('./src'));
 

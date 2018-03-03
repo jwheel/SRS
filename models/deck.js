@@ -79,6 +79,30 @@ class Deck {
             return Rx.Observable.of(this);       
         });
     }
+
+    getQuestionText() {
+
+        return this.cards.slice()
+        .sort(function(a,b) {
+            if(a.due_date < b.due_date) {
+                return -1;
+            }
+            if(a.due_date > b.due_date) {
+                return 1
+            }
+            return 0;
+        })
+        .reverse()
+        .map(x => x.question)
+        .join('\n');
+    }
+
+    writeQuestionFile() {
+        let fileName = this.name + ".ql";
+        let questionContents = this.getQuestionText();
+        let filePath = path.join(this.working_directory, fileName);
+        return fileIO.writeContentsToFile(filePath, questionContents);
+    }
 }
 
 

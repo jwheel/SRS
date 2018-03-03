@@ -51,6 +51,12 @@ class SrsApp {
         newArray.push(item);
         return newArray;
     }
+
+    getWordList() {
+         return Rx.Observable
+        .ajax('api/review_list')
+        .map(e => e.response);
+    }
 }
 
 module.exports = SrsApp;
