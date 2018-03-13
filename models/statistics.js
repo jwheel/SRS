@@ -17,13 +17,13 @@ class Statistics {
     getDueDateHistogram(deckName, directory) {
         directory = directory || config.app_settings.deck_directory;
         const days = _.range(364).map(x => new moment().startOf('year').add(x, 'd'));
-
         const histogram = [];
 
         let deck = new DeckModel.Deck(deckName, directory);
         return deck.load()
         .flatMap(thisDeck => {
             days.forEach(day => {
+        
                 let nextDay = day.clone().add(1,'d');
                 let numCardsDue = thisDeck.cards
                 .filter(x => { 
@@ -31,9 +31,10 @@ class Statistics {
                     return due_date.isBetween(day, nextDay, 'ms');
                                 }).length;
                 let display = day.format('YYYY-MM-DD')
-                histogram.push({due_date:display, cards_due:numCardsDue});
+                histogram.push({due_date:display, cards_due:numCardsDue});                
+        
             });
-            
+        
             return Rx.Observable.of(histogram);
         });
     }

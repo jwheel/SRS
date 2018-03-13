@@ -24,7 +24,7 @@ class {
             srsDeck.getDueDateHistogram(this.state.name)
             .subscribe(data => {
                 self.data = data.filter(x => {
-                    return x.due_date.startsWith('2018-02-2') || x.due_date.startsWith('2018-03');
+                    return x.due_date.startsWith('2018-03') || x.due_date.startsWith('2018-04');
                 });
                 
                 if(this.state.data && this.state.data.length > 0) {
