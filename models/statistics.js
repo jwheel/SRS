@@ -16,25 +16,23 @@ class Statistics {
 
     getDueDateHistogram(deckName, directory) {
         directory = directory || config.app_settings.deck_directory;
-        const days = _.range(364).map(x => new moment().startOf('year').add(x, 'd'));
-        const histogram = [];
-
+        
+        const days = _.range(364).map(x => (new moment().startOf('year').add(x, 'd')).format('YYYY-MM-DD'));
+        let rawHist = {};
+        days.forEach(x => {
+            rawHist[x] = 0;
+        })
         let deck = new DeckModel.Deck(deckName, directory);
         return deck.load()
         .flatMap(thisDeck => {
-            days.forEach(day => {
-        
-                let nextDay = day.clone().add(1,'d');
-                let numCardsDue = thisDeck.cards
-                .filter(x => { 
-                    let due_date = new moment(x.due_date);
-                    return due_date.isBetween(day, nextDay, 'ms');
-                                }).length;
-                let display = day.format('YYYY-MM-DD')
-                histogram.push({due_date:display, cards_due:numCardsDue});                
-        
+            let cards = thisDeck.cards;
+            cards.forEach(function(element) {
+                let due_date = (new moment(element.due_date)).format('YYYY-MM-DD');
+                rawHist[due_date] ? rawHist[due_date]++ : rawHist[due_date] = 1;                
+            }, this);
+            let histogram = Object.keys(rawHist).map(x => {
+                return {'due_date':x,'cards_due':rawHist[x]};
             });
-        
             return Rx.Observable.of(histogram);
         });
     }
