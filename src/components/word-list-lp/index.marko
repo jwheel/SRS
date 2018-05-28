@@ -1,0 +1,40 @@
+import srsApp from '~/src/app/srs/app'
+
+class {
+    onCreate() {
+        this.state = {
+            words: [],
+            page: 'word-list'
+        };
+    }
+    
+    onMount() {
+        let $t = this;
+        srsApp.getWordList()
+        .subscribe(result => {
+            $t.state.words = result.filter(x => {
+                return x.definitions.length > 0;
+            });
+        });
+    }
+    quizClicked() {
+        this.state.page = 'quiz';
+    }
+    wordListClicked() {
+        this.state.page = 'word-list';
+    }
+
+}
+
+style {
+
+}
+<input type="button" value="Quiz" on-click('quizClicked')/>
+<input type="button" value="Word List" on-click('wordListClicked')>
+
+<if(state.page == 'quiz')>
+    <flashcards words=state.words/>
+</if>
+<else-if(state.page == 'word-list')>
+    <word-list words=state.words/>
+</else-if>

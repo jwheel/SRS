@@ -1,0 +1,87 @@
+import srsApp from '~/src/app/srs/app'
+
+class {
+    onCreate() {
+        this.state = {
+            words: [],
+            studyMode: true
+        };
+    }
+    
+    onMount() {        
+    }
+
+    onInput(input) {
+        this.state.words = input.words;
+    }
+}
+style {
+    .table-stuff {
+        padding:0px;
+        border-collapse:collapse;
+        border-spacing:0;
+
+    }
+    .spacing {
+        width:150px;
+    }
+    .border {        
+        border:1px solid #333;        
+    }
+    .border-right {
+        border-right:1px solid #333;        
+    }
+    .margin {
+        margin:0px;        
+    }
+    .v-align {
+        vertical-align:top;
+    }
+    .word-box {
+        display:inline-block;
+        background-color:#adf;
+        color:#333;
+        margin-bottom:40px;
+        margin-right:40px;
+        width:150px;
+        height:40px;        
+        font-size:30px;
+        font-family:'Yu Mincho Regular';
+
+    }
+}
+
+<div>
+    <if(state.words)>
+        <p>Currently displaying ${state.words.length} words</p>
+    </if>
+    <if(state.studyMode)>
+        <for(word in state.words)>
+            <div.word-box>
+                ${word.word}
+            </div>
+        </for>
+    </if>
+    <else>
+        <table.table-stuff>
+        <for(word in state.words)>
+            <tr><td.margin.border.v-align.spacing >${word.word}</td>
+                <td.margin.border.v-align>
+                    <table.table-stuff.margin>
+                        <for(def in word.definitions)>
+                            <tr>
+                                <td.border-right.v-align.spacing.margin>
+                                    ${def.pronunciation}
+                                </td>
+                                <td.v-align>
+                                    ${def.definition}
+                                </td>
+                            </tr>
+                        </for>
+                    </table>
+                </td>
+            </tr>
+        </for>
+        </table>
+    </else>
+</div>

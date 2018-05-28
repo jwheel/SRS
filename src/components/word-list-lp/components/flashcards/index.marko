@@ -1,0 +1,61 @@
+class {
+
+    onCreate() {
+        this.state = {
+            words: [],
+            index:0
+        }
+    }
+    
+    onMount() {        
+    }
+
+    onInput(input) {
+        this.state.words = input.words;
+    }
+    checkClicked() {
+        let $t = this.state;
+        let input = this.getEl('text-input');
+        let inputValue = input.value;
+        console.log(inputValue);
+        if($t.words[$t.index].word === inputValue){
+            $t.index = ($t.index + 1) % $t.words.length;
+        }
+        
+    }
+}
+style {
+    .txtInput {
+        height:40px;
+        padding:0px;
+        margin:0px;
+        font-size: 30px;
+        font-family: 'Yu Mincho Regular';
+    }
+    .word-box-quiz {
+        display: inline-block;
+        background-color: #adf;
+        color: #333;
+        margin-bottom: 40px;
+        margin-right: 40px;
+        min-width: 100px;
+        padding-left: 40px;
+        padding-right: 40px;
+        font-size: 100px;
+        font-family: 'Yu Mincho Regular';
+    }
+}
+
+<div>
+    <if(state.words && state.words.length > state.index)>
+    <div.word-box-quiz>
+        ${state.words[state.index].word}
+    </div>
+
+    <div>
+        <input.txtInput name="txtInput" key="text-input" type="text" value=''/>
+        <input type="button" value="Check" on-click('checkClicked')/>
+    </div>
+    </if>
+</div>
+
